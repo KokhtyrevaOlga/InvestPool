@@ -99,8 +99,6 @@ contract InvestPool {
 		
 		uint256 public tokenBalance;
 		
-		ProjectInterface ProjectContract = ProjectInterface(projectAddress);
-		
 		modifier onlyOwner() {
 			require(msg.sender == poolOwner);
 			_;
