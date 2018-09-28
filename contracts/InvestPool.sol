@@ -1,4 +1,5 @@
 pragma solidity ^0.4.16;
+import "browser/AbstractProject.sol";
 
 /**
  * @title SafeMath
@@ -6,25 +7,25 @@ pragma solidity ^0.4.16;
  */
 library SafeMath {
     
-  function mul(uint256 a, uint256 b) internal constant returns (uint256) {
+  function mul(uint256 a, uint256 b) internal pure returns (uint256) {
     uint256 c = a * b;
     assert(a == 0 || c / a == b);
     return c;
   }
  
-  function div(uint256 a, uint256 b) internal constant returns (uint256) {
+  function div(uint256 a, uint256 b) internal pure returns (uint256) {
     // assert(b > 0); // Solidity automatically throws when dividing by 0
     uint256 c = a / b;
     // assert(a == b * c + a % b); // There is no case in which this doesn't hold
     return c;
   }
  
-  function sub(uint256 a, uint256 b) internal constant returns (uint256) {
+  function sub(uint256 a, uint256 b) internal pure returns (uint256) {
     assert(b <= a);
     return a - b;
   }
  
-  function add(uint256 a, uint256 b) internal constant returns (uint256) {
+  function add(uint256 a, uint256 b) internal pure returns (uint256) {
     uint256 c = a + b;
     assert(c >= a);
     return c;
@@ -127,7 +128,6 @@ contract InvestPool {
 			start = _start;
 			period = _period;
 			criticalDate = _criticalDate;
-			ProjectInterface ProjectContract = ProjectInterface(_projectAddress);
 		}
 		
 		/**
@@ -179,8 +179,11 @@ contract InvestPool {
 		*/
 		function investProject() public onlyOwner payable returns(bool) {
 			require((now > start + period*24*60*60) && (now < criticalDate) && (address(this).balance >= minTotalAmount));
+			address multisig = 0x1230000000000000000000000000000000000000;
+			multisig.transfer(msg.value);
 			icoWorldAddress.transfer(address(this).balance.mul(icoWorldCommision).div(100));
 			projectAddress.transfer(address(this).balance);
+			AbstractProject ProjectContract = AbstractProject(projectAddress);
 			tokenBalance = ProjectContract.balanceOf(address(this));
 			isInvest = true;
 		}
@@ -192,6 +195,7 @@ contract InvestPool {
 		function getTokens() public returns(bool) {
 			uint256 value = (1 - poolCommision.div(100)).mul(tokenBalance).mul(investments[msg.sender].div(balance));
 			investments[msg.sender] = 0;
+			AbstractProject ProjectContract = AbstractProject(projectAddress);
 			ProjectContract.transferFrom(address(this), msg.sender, value);
 		}
     
