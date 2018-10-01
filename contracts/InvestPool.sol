@@ -1,5 +1,4 @@
 pragma solidity ^0.4.16;
-import "browser/AbstractProject.sol";
 
 /**
  * @title SafeMath
@@ -33,33 +32,15 @@ library SafeMath {
   
 }
 
-contract ProjectInterface {
-  function totalSupply() public view returns (uint256);
 
+contract AbstractProject {
+  
   function balanceOf(address _who) public view returns (uint256);
-
-  function allowance(address _owner, address _spender)
-    public view returns (uint256);
 
   function transfer(address _to, uint256 _value) public returns (bool);
 
-  function approve(address _spender, uint256 _value)
-    public returns (bool);
-
   function transferFrom(address _from, address _to, uint256 _value)
     public returns (bool);
-
-  event Transfer(
-    address indexed from,
-    address indexed to,
-    uint256 value
-  );
-
-  event Approval(
-    address indexed owner,
-    address indexed spender,
-    uint256 value
-  );
 }
 
 contract InvestPool {
@@ -134,7 +115,7 @@ contract InvestPool {
 		* @dev Function to send eth to the smart contract.
 		*/
 		function() external payable {
-        require(now > start && now < start + period*24*60*60 && (balance + msg.value) <= maxTotalAmount && msg.value >= minTotalAmountForOne && msg.value <= maxTotalAmountForOne);
+        //require(now > start && now < start + period*24*60*60 && (balance + msg.value) <= maxTotalAmount && msg.value >= minTotalAmountForOne && msg.value <= maxTotalAmountForOne);
         investments[msg.sender] = investments[msg.sender].add(msg.value);
         addresses.push(msg.sender);
         balance = balance.add(msg.value);
@@ -178,13 +159,11 @@ contract InvestPool {
 		* @return A bool specifing the result.
 		*/
 		function investProject() public onlyOwner payable returns(bool) {
-			require((now > start + period*24*60*60) && (now < criticalDate) && (address(this).balance >= minTotalAmount));
-			address multisig = 0x1230000000000000000000000000000000000000;
-			multisig.transfer(msg.value);
-			icoWorldAddress.transfer(address(this).balance.mul(icoWorldCommision).div(100));
+			//require((now > start + period*24*60*60) && (now < criticalDate) && (address(this).balance >= minTotalAmount));
+			//icoWorldAddress.transfer(address(this).balance.mul(icoWorldCommision).div(100));
 			projectAddress.transfer(address(this).balance);
-			AbstractProject ProjectContract = AbstractProject(projectAddress);
-			tokenBalance = ProjectContract.balanceOf(address(this));
+			//AbstractProject ProjectContract = AbstractProject(projectAddress);
+			//tokenBalance = ProjectContract.balanceOf(address(this));
 			isInvest = true;
 		}
     
