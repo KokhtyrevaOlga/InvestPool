@@ -160,7 +160,7 @@ contract InvestPool {
 		*/
 		function investProject() public onlyOwner payable returns(bool) {
 			//require((now > start + period*24*60*60) && (now < criticalDate) && (address(this).balance >= minTotalAmount));
-			//icoWorldAddress.transfer(address(this).balance.mul(icoWorldCommision).div(100));
+			icoWorldAddress.transfer(address(this).balance.mul(icoWorldCommision).div(100));
 			projectAddress.transfer(address(this).balance);
 			//AbstractProject ProjectContract = AbstractProject(projectAddress);
 			//tokenBalance = ProjectContract.balanceOf(address(this));
